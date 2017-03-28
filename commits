@@ -1,0 +1,70 @@
+#!/bin/bash
+USAGE="
+SYNOPSIS
+    ./commits [-dp]
+
+DESCRIPTION
+    This is a script designed to generate a custom output from git log.  
+    Commits are retrieved based on a given time period.
+
+OPTIONS
+    -p|--path [path]        Set the path of the target git repository relative to your home directory
+    -d|--date [yesterday]   Set the starting date for your log output (More to come)
+
+EXAMPLES
+    ./commits -d=yesterday -p=\"some/directory/relative/to/home/\"
+
+EXAMPLE OUTPUT
+    -----------------------------------------------------
+    Commits from: Mon Mar 27 10:04:10 EDT 2017
+    -----------------------------------------------------
+    [ ✔ ] I did these things last
+    [ ✔ ] I did some more things
+    [ ✔ ] I did these things first
+"
+
+for i in "$@" 
+do
+case $i in
+    -d=*|--date=*)
+    if [ "${i#*=}" == 'yesterday' ]; then
+      DATE=$(date -j -v-1d)
+    fi
+    shift
+    ;;
+
+    -p=*|--path=*)
+    REPO_DIR="${i#*=}"
+    shift 
+    ;;
+
+    --default)
+    HELP=1
+    shift # past argument with no value
+    ;;
+
+    -h|--help)
+    HELP=1
+    shift # past argument with no value
+    ;;
+
+    \?)        # unknown option
+    echo "${i} is not a valid option"
+    ;;
+esac
+done
+
+if [[ ${HELP} -ne 1 ]]; then
+  echo "-----------------------------------------------------"
+  echo "Commits from: $DATE"
+  echo "-----------------------------------------------------"
+  if [[ ${REPO_DIR} ]]; then
+    REPO_DIR="${HOME}/${REPO_DIR}"
+    LOG=$(cd ${REPO_DIR}; git log --format='[ ✔ ] %s' --after="$DATE")
+  else 
+    LOG=$(git log --format='[ ✔ ] %s' --after="$DATE")
+  fi
+  echo "$LOG"
+else
+  echo "${USAGE}"
+fi
