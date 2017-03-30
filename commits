@@ -9,7 +9,7 @@ DESCRIPTION
 
 OPTIONS
     -p|--path [path]        Set the path of the target git repository relative to your home directory
-    -d|--date [yesterday]   Set the starting date for your log output (More to come)
+    -d|--date [yesterday|today]   Set the starting date for your log output (More to come)
 
 EXAMPLES
     ./commits -d=yesterday -p=\"some/directory/relative/to/home/\"
@@ -29,6 +29,9 @@ case $i in
     -d=*|--date=*)
     if [ "${i#*=}" == 'yesterday' ]; then
       DATE=$(date -j -v-1d)
+    fi
+    if [ "${i#*=}" == 'today' ]; then
+      DATE=$(date -j -f'%Y-%m-%d %H:%M:%S' "$(date +%Y-%m-%d) 00:00:00")
     fi
     shift
     ;;
