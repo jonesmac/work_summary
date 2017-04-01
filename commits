@@ -28,7 +28,7 @@ do
 case $i in
     -d=*|--date=*)
     if [ "${i#*=}" == 'yesterday' ]; then
-      DATE=$(date -j -v-1d)
+      DATE=$(date -j -v-1d -f'%Y-%m-%d %H:%M:%S' "$(date +%Y-%m-%d) 00:00:00")
     fi
     if [ "${i#*=}" == 'today' ]; then
       DATE=$(date -j -f'%Y-%m-%d %H:%M:%S' "$(date +%Y-%m-%d) 00:00:00")
