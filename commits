@@ -33,6 +33,9 @@ case $i in
     if [ "${i#*=}" == 'today' ]; then
       DATE=$(date -j -f'%Y-%m-%d %H:%M:%S' "$(date +%Y-%m-%d) 00:00:00")
     fi
+    if [ "${i#*=}" == '2d' ]; then
+      DATE=$(date -j -v-2d -f'%Y-%m-%d %H:%M:%S' "$(date +%Y-%m-%d) 00:00:00")
+    fi
     shift
     ;;
 
